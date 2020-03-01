@@ -14,7 +14,7 @@ const splitArray = (arr, size) => {
     // Each "chunk" will be mapped through and for each number an Object will be filled up and returned via forEach
     const arrayOfChunkObjects = arrayOfNumberChunks.map(chunk => {
         let obj = {};
-        chunk.forEach((num, index) => (obj[`num_${index+1}`]= num))
+        chunk.forEach((num, index) => (obj[`num_${index+1}`] = num))
         return obj;
     })
 
@@ -50,31 +50,74 @@ const pizzaOffers = [{
 {
     id: 2,
     name: 'Aranka',
-    toppings: ['tomatoes', 'garlic', 'basil', 'oregano']
+    toppings: ['garlic', 'basil', 'oregano', 'mushrooms', 'mozzarella']
+},
+{
+    id: 3,
+    name: 'Diavolo',
+    toppings: ['tomatoes', 'parmesan', 'salami', 'pepperoni']
 }];
 
 const friends = [{
     name: 'Felix',
     noGos: ['tomatoes', 'eggs'],
-    preferences: ['basil', 'mozzarella'],
+    preferences: ['basil', 'mozzarella', 'salami', 'garlic'],
 }, {
     name: 'Ilja',
-    noGos: ['mushrooms', 'spinach'],
-    preferences: ['parmesan', 'eggs', 'oregano'],
+    noGos: ['spinach'],
+    preferences: ['parmesan', 'eggs', 'oregano', 'salami', 'garlic'],
 }];
+
+
 
 const printPizzaFans = (friends, pizzaOffers) => {
     const peopleAndTheirFavs = friends.map(friend => {
-        const pizzaNamesForFriend = friend.preferences.map(pref => {
-            const potentialPizzas = pizzaOffers.filter(pizza => pizza.toppings.includes(pref));
-            console.log(potentialPizzas)
-            
+
+        const pizzaArray = [];
+        friend.preferences.forEach(pref => {
+
+            pizzaOffers.forEach(pizza => {
+                if(pizza.toppings.includes(pref)){
+                    
+                    if(pizzaArray.filter(p => p.name == pizza.name).length > 0){
+                        pizzaArray.find(p => p.name == pizza.name).matchCounter++;
+                    }else{
+                        pizzaArray.push({name: pizza.name, matchCounter: 1});
+                    }
+                }
+            })
+        });
+        const noGoPizzas = [...new Set(friend.noGos.map(nogo => {
+            return pizzaOffers.filter(pizza => pizza.toppings.includes(nogo));
+        }).flat().map(pizza => pizza.name))];
+
+        const filteredPizzaArray = pizzaArray.filter(pizza => !noGoPizzas.includes(pizza.name)).sort((a, b) => {
+            return a.matchCounter > b.matchCounter;
         })
+        
+        const favPizzas = filteredPizzaArray.filter(favP => favP.matchCounter === filteredPizzaArray[0].matchCounter).map(p => p.name).sort();
+
+        let pizzaNamesString = '';
+
+        favPizzas.forEach((pizzaName, index) => {
+            if(favPizzas.length > 1 ){
+                if(index < favPizzas.length - 1){
+                    pizzaNamesString += `${pizzaName}, `;
+                }else {
+                    pizzaNamesString += pizzaName;
+                }
+            }else{
+                pizzaNamesString = pizzaName;
+            }
+        })
+
+
         return {
-            favouritePizza: Array.from(new Set(pizzaNamesForFriend.flat())).sort().toString(),
+            favouritePizza: pizzaNamesString,
             name: friend.name
         }
     })
+
     return peopleAndTheirFavs;
 }
 
