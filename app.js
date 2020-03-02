@@ -64,7 +64,7 @@ const friends = [{
     preferences: ['basil', 'mozzarella', 'salami', 'garlic'],
 }, {
     name: 'Ilja',
-    noGos: ['spinach'],
+    noGos: ['spinach', 'basil'],
     preferences: ['parmesan', 'eggs', 'oregano', 'salami', 'garlic'],
 }];
 
@@ -125,7 +125,7 @@ const printPizzaFans = (friends, pizzaOffers) => {
     return peopleAndTheirFavs;
 }
 
-//console.log(printPizzaFans(friends, pizzaOffers));
+console.log(printPizzaFans(friends, pizzaOffers));
 
 
 const printFriendsForAPizza = (pizza, friends) => {
@@ -174,3 +174,25 @@ const printFriendsForAPizza = (pizza, friends) => {
 }
 
 console.log(printFriendsForAPizza(pizzaOffers[1], friends));
+
+
+const printPizzaFansVTwo = (friends, pizzaOffers) => {
+
+    return preferedPizzaOfFriends = friends.map(friend => {
+
+        const preferredPizzas = pizzaOffers.map(pizza => {
+            if(friend.preferences.some(pref => pizza.toppings.includes(pref)) && !friend.noGos.some(nogo => pizza.toppings.includes(nogo))){
+                return pizza;
+            }
+        })
+
+        return{
+            favouritePizza: preferredPizzas,
+            name: friend.name
+        }
+
+    })
+
+}
+
+console.log(printPizzaFansVTwo(friends, pizzaOffers))
