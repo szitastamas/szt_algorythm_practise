@@ -87,9 +87,13 @@ const printPizzaFans = (friends, pizzaOffers) => {
                 }
             })
         });
-        const noGoPizzas = [...new Set(friend.noGos.map(nogo => {
-            return pizzaOffers.filter(pizza => pizza.toppings.includes(nogo));
-        }).flat().map(pizza => pizza.name))];
+        const noGoPizzas = [...new Set(
+            friend.noGos.map(nogo => {
+                return pizzaOffers.filter(pizza => pizza.toppings.includes(nogo));
+            })
+            .flat()
+            .map(pizza => pizza.name)
+        )];
 
         const filteredPizzaArray = pizzaArray.filter(pizza => !noGoPizzas.includes(pizza.name)).sort((a, b) => {
             return a.matchCounter > b.matchCounter;
@@ -121,4 +125,52 @@ const printPizzaFans = (friends, pizzaOffers) => {
     return peopleAndTheirFavs;
 }
 
-console.log(printPizzaFans(friends, pizzaOffers));
+//console.log(printPizzaFans(friends, pizzaOffers));
+
+
+const printFriendsForAPizza = (pizza, friends) => {
+    const friendPizzaDictionary = {};
+
+    pizza.toppings.forEach(topping => {
+        friends.forEach(friend => {
+            if(!friend.noGos.some(nogo => pizza.toppings.includes(nogo))){
+                if(friend.preferences.includes(topping)){
+                    if(friendPizzaDictionary[friend.name]){
+                        friendPizzaDictionary[friend.name]++;
+                    }else{
+                        friendPizzaDictionary[friend.name] = 1;
+                    }
+                }
+            }
+        })
+    });
+
+    const highestFriendPrefMatches = Object.values(friendPizzaDictionary).sort((a,b) => b-a)[0];
+
+
+    const friendsToGetThePizza = Object.entries(friendPizzaDictionary).filter(entry => {
+        if(entry[1] == highestFriendPrefMatches){
+            return entry[0];
+        }
+    }).map(entry => entry[0])
+    .sort();
+
+    let friendNameStrings = '';
+
+    if(friendsToGetThePizza.length > 0){
+        friendsToGetThePizza.forEach((friend, index) => {
+            if(index < friendsToGetThePizza.length - 1){
+                friendNameStrings += `${friend}, `
+            }else{
+                friendNameStrings += friend
+            }
+        })
+    }else{
+        friendNameStrings = friendsToGetThePizza;
+    }
+
+
+    return friendNameStrings;
+}
+
+console.log(printFriendsForAPizza(pizzaOffers[1], friends));
