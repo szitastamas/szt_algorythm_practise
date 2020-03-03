@@ -4,7 +4,7 @@ const array = [1,2,3,4,5,6,7,8,9];
 
 const splitArray = (arr, size) => {
 
-    const arrCopy = arr.slice(0);
+    const arrCopy = [...arr];
     const arrayOfNumberChunks = [];
 
     while(arrCopy.length > 0){
@@ -60,7 +60,7 @@ const pizzaOffers = [{
 
 const friends = [{
     name: 'Felix',
-    noGos: ['tomatoes', 'eggs'],
+    noGos: ['eggs'],
     preferences: ['basil', 'mozzarella', 'salami', 'garlic'],
 }, {
     name: 'Ilja',
@@ -178,16 +178,42 @@ console.log(printFriendsForAPizza(pizzaOffers[1], friends));
 
 const printPizzaFansVTwo = (friends, pizzaOffers) => {
 
-    return preferedPizzaOfFriends = friends.map(friend => {
+    return friends.map(friend => {
 
-        const preferredPizzas = pizzaOffers.map(pizza => {
-            if(friend.preferences.some(pref => pizza.toppings.includes(pref)) && !friend.noGos.some(nogo => pizza.toppings.includes(nogo))){
+        const preferredPizzas = pizzaOffers.filter(pizza => {
+            if(
+                friend.preferences.some(pref => pizza.toppings.includes(pref)) === true && 
+                friend.noGos.some(nogo => pizza.toppings.includes(nogo)) === false
+            ){
                 return pizza;
+            }
+        });
+
+        const checkMatchCountOfPrefs = [];
+
+        preferredPizzas.forEach(pizza => {
+
+        })
+
+        // Implement matchCounter method
+
+        //.map(pizza => pizza.name).sort()
+        let pizzaNameStringArray = '';
+
+        preferredPizzas.forEach((pizzaName, index, preferredPizzas) => {
+            if(preferredPizzas.length > 1){
+                if(index < preferredPizzas.length - 1){
+                    pizzaNameStringArray += `${pizzaName}, `
+                }else{
+                    pizzaNameStringArray += `${pizzaName}`
+                }
+            }else{
+                pizzaNameStringArray = pizzaName;
             }
         })
 
         return{
-            favouritePizza: preferredPizzas,
+            favouritePizza: pizzaNameStringArray,
             name: friend.name
         }
 
