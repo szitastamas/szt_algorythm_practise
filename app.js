@@ -58,18 +58,31 @@ const pizzaOffers = [{
     toppings: ['tomatoes', 'parmesan', 'salami', 'pepperoni']
 }];
 
-const friends = [{
-    name: 'Felix',
-    noGos: ['eggs'],
-    preferences: ['basil', 'mozzarella', 'salami', 'garlic'],
-}, {
-    name: 'Ilja',
-    noGos: ['spinach', 'basil'],
-    preferences: ['parmesan', 'eggs', 'oregano', 'salami', 'garlic'],
-}];
+const friends =[
+    {
+        name: 'Felix',
+        noGos: ['tomatoes', 'eggs'],
+        preferences: ['basil', 'mozzarella'],
+    }, 
+    {
+        name: 'Ilja',
+        noGos: ['mushrooms', 'spinach'],
+        preferences: ['parmesan', 'eggs'],
+    },
+    {
+        name: 'Norma',
+        noGos: ['bacon', 'salami'],
+        preferences: ['garlic', 'parmesan'],
+    }, 
+    {
+        name: 'Philipp',
+        noGos: ['spinach', 'parmesan'],
+        preferences: ['garlic', 'basil'],
+    }
+];
 
 
-
+// First approach - Does not work properly
 const printPizzaFans = (friends, pizzaOffers) => {
     const peopleAndTheirFavs = friends.map(friend => {
 
@@ -125,9 +138,103 @@ const printPizzaFans = (friends, pizzaOffers) => {
     return peopleAndTheirFavs;
 }
 
-console.log(printPizzaFans(friends, pizzaOffers));
+// console.log(printPizzaFans(friends, pizzaOffers));
 
+// Second approach - Works as intended - Refactoring necessary
+const printPizzaFansVTwo = (friends, pizzaOffers) => {
 
+    return friends.map(friend => {
+
+        const preferredPizzas = pizzaOffers.filter(pizza => {
+            if(
+                friend.preferences.some(pref => pizza.toppings.includes(pref)) === true && 
+                friend.noGos.some(nogo => pizza.toppings.includes(nogo)) === false
+            ){
+                return pizza;
+            }
+        });
+
+        const pizzaArray = [];
+        friend.preferences.forEach(pref => {
+
+            preferredPizzas.forEach(pizza => {
+                if(pizza.toppings.includes(pref)){
+                    
+                    if(pizzaArray.filter(p => p.name == pizza.name).length > 0){
+                        pizzaArray.find(p => p.name == pizza.name).matchCounter++;
+                    }else{
+                        pizzaArray.push({name: pizza.name, matchCounter: 1});
+                    }
+                }
+            })
+        });
+
+        const mostlyMatchedPrefCounter = pizzaArray.reduce((acc, val) => {
+            return [...acc, val.matchCounter]
+        }, []).sort((a,b) => b-a)[0]
+        
+        const mostlyMatchedPizzas = pizzaArray.filter(pizza => pizza.matchCounter == mostlyMatchedPrefCounter).map(pizza => pizza.name).sort();
+        let pizzaNameStringArray = '';
+
+        mostlyMatchedPizzas.forEach((pizzaName, index, mostlyMatchedPizzas) => {
+            if(mostlyMatchedPizzas.length > 1){
+                if(index < mostlyMatchedPizzas.length - 1){
+                    pizzaNameStringArray += `${pizzaName}, `
+                }else{
+                    pizzaNameStringArray += `${pizzaName}`
+                }
+            }else{
+                pizzaNameStringArray = pizzaName;
+            }
+        })
+
+        return{
+            favouritePizza: pizzaNameStringArray,
+            name: friend.name
+        }
+
+    })
+
+}
+
+// console.log(printPizzaFansVTwo(friends, pizzaOffers))
+
+// Third approach - Works as intended - Refactoring done
+const printPizzaFansVThree = (friends, pizzaOffers) => {
+
+    return friends.map(friend => {
+
+        const preferredPizzas = pizzaOffers.filter(pizza => {
+            if(
+                friend.preferences.some(pref => pizza.toppings.includes(pref)) === true && 
+                friend.noGos.some(nogo => pizza.toppings.includes(nogo)) === false
+            ){
+                return pizza;
+            }
+        }).map(pizza => {
+            return {
+                ...pizza,
+                matchCounter: pizza.toppings.reduce((acc, topping) => { return friend.preferences.includes(topping) ?  acc += 1 : acc }, 0)
+            }
+        });
+
+        const mostlyMatchedPrefCounter = preferredPizzas.map(pizza => +pizza.matchCounter).sort((a,b) => b-a)[0];
+        
+        const mostlyMatchedPizzas = preferredPizzas.filter(pizza => pizza.matchCounter == mostlyMatchedPrefCounter).map(pizza => pizza.name).sort();
+
+        const pizzaNameStringArray = mostlyMatchedPizzas.length > 1 ? mostlyMatchedPizzas.toString().replace(/,/g, ", ") : mostlyMatchedPizzas.toString();
+
+        return{
+            favouritePizza: pizzaNameStringArray,
+            name: friend.name
+        }
+
+    })
+}
+
+// console.log(printPizzaFansVThree(friends, pizzaOffers))
+
+// First approach - Works as intended - Refactoring needed
 const printFriendsForAPizza = (pizza, friends) => {
     const friendPizzaDictionary = {};
 
@@ -176,49 +283,30 @@ const printFriendsForAPizza = (pizza, friends) => {
 console.log(printFriendsForAPizza(pizzaOffers[1], friends));
 
 
-const printPizzaFansVTwo = (friends, pizzaOffers) => {
+// Second approach - Works as intended - Refactoring done
+const printFriendsForAPizzaVersionTwo = (pizza, friends) => {
 
-    return friends.map(friend => {
-
-        const preferredPizzas = pizzaOffers.filter(pizza => {
-            if(
-                friend.preferences.some(pref => pizza.toppings.includes(pref)) === true && 
-                friend.noGos.some(nogo => pizza.toppings.includes(nogo)) === false
-            ){
-                return pizza;
+    // Creating an object with friends and matchCounter for the pizzas that they would eat excluding all pizzas that contain a noGo topping
+    const friendPizzaObject = friends.filter(friend => !friend.noGos.some(nogo => pizza.toppings.includes(nogo)))
+        .map(friend => {
+            return{
+                name: friend.name,
+                matchCounter: pizza.toppings.reduce((acc, topping) => {return friend.preferences.includes(topping) ? acc += 1 : acc}, 0)
             }
-        });
+    });
 
-        const checkMatchCountOfPrefs = [];
+    console.log(friendPizzaObject)
+    // Finding out the highest matchCounter which will indicate which friend likes the particular pizza the most
+    const highestFriendPrefMatches = +friendPizzaObject.map(obj => obj.matchCounter).sort((a,b) => b-a)[0];
+    
+    // Filtering out the friends whose matchCounter is the highest
+    const friendsToGetThePizza = friendPizzaObject.filter(friendPizza => +friendPizza.matchCounter === +highestFriendPrefMatches).map(friendPizza => friendPizza.name);
 
-        preferredPizzas.forEach(pizza => {
+    // Creating the string that contains the friends names separated by a comma and witch a space after the comma
+    const friendNameStrings = friendsToGetThePizza.length > 1 ? friendsToGetThePizza.toString().replace(/,/g, ", ") : friendsToGetThePizza.toString();
 
-        })
-
-        // Implement matchCounter method
-
-        //.map(pizza => pizza.name).sort()
-        let pizzaNameStringArray = '';
-
-        preferredPizzas.forEach((pizzaName, index, preferredPizzas) => {
-            if(preferredPizzas.length > 1){
-                if(index < preferredPizzas.length - 1){
-                    pizzaNameStringArray += `${pizzaName}, `
-                }else{
-                    pizzaNameStringArray += `${pizzaName}`
-                }
-            }else{
-                pizzaNameStringArray = pizzaName;
-            }
-        })
-
-        return{
-            favouritePizza: pizzaNameStringArray,
-            name: friend.name
-        }
-
-    })
-
+    return friendNameStrings;
 }
 
-console.log(printPizzaFansVTwo(friends, pizzaOffers))
+console.log(printFriendsForAPizzaVersionTwo(pizzaOffers[1], friends));
+
