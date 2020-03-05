@@ -310,3 +310,24 @@ const printFriendsForAPizzaVersionTwo = (pizza, friends) => {
 
 console.log(printFriendsForAPizzaVersionTwo(pizzaOffers[1], friends));
 
+
+const checkPinCodeValidity = (pin) => {
+    const regexForFour = new RegExp("^[0-9]{4}$")
+    const regexForSix = new RegExp("^[0-9]{6}$")
+
+    if(regexForFour.test(pin) === false && regexForSix.test(pin) === false){
+        return false;
+    }
+
+    return true;
+}
+
+const str1 = "asdgasa";
+const str2 = "asdfasgh";
+const longest = (s1, s2) => {
+
+    const combination = [...(s1+s2)].sort();
+    return [...new Set(combination)].join("");
+}
+
+console.log(longest(str1, str2))
