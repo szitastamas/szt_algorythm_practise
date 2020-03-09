@@ -452,7 +452,34 @@ const validSolution = (board) => {
 			isValid = false;
 			break;
 		}
-	}
+    }
+    
+    const blockOfNine = [];
+    let startIndex = 0;
+    let endIndex = 3;
+
+    const checkBlockValidity = block => {
+        return new Set(block).size === 9;
+    }
+
+    for(let i = startIndex; i < endIndex; i++){
+        for(let x = 0; x < 3; x++){
+            blockOfNine.push(board[i][x])
+        }
+
+        if(i === endIndex - 1){
+            if(checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == false){
+                startIndex+=3;
+                endIndex+=3;
+            } else if(checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == true){
+                isValid = true;
+            }
+            else{
+                isValid = false;
+                break;
+            }
+        }
+    }
 
 	// Implement 3x3 block validation --> each block must contain all 9 numbers
 	return isValid;
