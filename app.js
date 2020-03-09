@@ -524,12 +524,46 @@ console.log(findTheFirstSmallestPositiveNumber([3, 4, -1, 1]));
 const uniqueInOrder = (iterable) => {
 	if (Array.isArray(iterable)) return [...new Set(iterable)];
 
-	const something = iterable.split('').reduce((acc, letter, index, arr) => {
+	const filteredIterable = iterable.split('').reduce((acc, letter, index, arr) => {
 		return letter !== arr[index + 1] ? [...acc, letter] : acc;
 	}, []);
 
-	return something;
+	return filteredIterable;
 };
 
 console.log(uniqueInOrder('AAAABBBCCDAABBB'));
 console.log(uniqueInOrder([1, 2, 2, 3, 3]));
+
+// For example 99 will have "weight" 18, 100 will have "weight" 1 so in the list 100 will come before 99.
+// Given a string with the weights of FFC members in normal order can you give this string ordered by "weights" of these numbers?
+
+// Example:
+// "56 65 74 100 99 68 86 180 90" ordered by numbers weights becomes: "100 180 90 56 65 74 68 86 99"
+
+// When two numbers have the same "weight", let us class them as if they were strings (alphabetical ordering) and not numbers:
+// 100 is before 180 because its "weight" (1) is less than the one of 180 (9) and 180 is before 90 since, having the same "weight" (9), it comes before as a string.
+
+// All numbers in the list are positive numbers and the list can be empty.
+
+function orderWeight(strng) {
+	const noIdea = strng
+		.trim()
+		.split(' ')
+		.reduce((acc, num) => {
+			return [
+				...acc,
+				{
+					num: num,
+					weight: num.split('').reduce((acc, singleNum) => (acc += +singleNum), 0)
+				}
+			];
+		}, [])
+		.sort((a, b) => a.weight - b.weight);
+
+	return noIdea
+		.map((obj) => obj.num)
+		.sort()
+		.join(' ');
+}
+
+console.log(orderWeight('56 65 74 100 99 68 86 180 90'));
