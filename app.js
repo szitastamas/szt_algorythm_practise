@@ -452,36 +452,34 @@ const validSolution = (board) => {
 			isValid = false;
 			break;
 		}
-    }
-    
-    const blockOfNine = [];
-    let startIndex = 0;
-    let endIndex = 3;
+	}
 
-    const checkBlockValidity = block => {
-        return new Set(block).size === 9;
-    }
+	const blockOfNine = [];
+	let startIndex = 0;
+	let endIndex = 3;
 
-    for(let i = startIndex; i < endIndex; i++){
-        for(let x = 0; x < 3; x++){
-            blockOfNine.push(board[i][x])
-        }
+	const checkBlockValidity = (block) => {
+		return new Set(block).size === 9;
+	};
 
-        if(i === endIndex - 1){
-            if(checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == false){
-                startIndex+=3;
-                endIndex+=3;
-            } else if(checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == true){
-                isValid = true;
-            }
-            else{
-                isValid = false;
-                break;
-            }
-        }
-    }
+	for (let i = startIndex; i < endIndex; i++) {
+		for (let x = 0; x < 3; x++) {
+			blockOfNine.push(board[i][x]);
+		}
 
-	// Implement 3x3 block validation --> each block must contain all 9 numbers
+		if (i === endIndex - 1) {
+			if (checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == false) {
+				startIndex += 3;
+				endIndex += 3;
+			} else if (checkBlockValidity(blockOfNine) === true && endIndex >= board[0].length == true) {
+				isValid = true;
+			} else {
+				isValid = false;
+				break;
+			}
+		}
+	}
+
 	return isValid;
 };
 
@@ -514,3 +512,24 @@ const findTheFirstSmallestPositiveNumber = (arr) => {
 };
 
 console.log(findTheFirstSmallestPositiveNumber([3, 4, -1, 1]));
+
+// Implement the function unique_in_order which takes as argument a sequence and returns
+// a list of items without any elements with the same value next to each other and preserving the original order of elements.
+
+// For example:
+// uniqueInOrder('AAAABBBCCDAABBB') == ['A', 'B', 'C', 'D', 'A', 'B']
+// uniqueInOrder('ABBCcAD')         == ['A', 'B', 'C', 'c', 'A', 'D']
+// uniqueInOrder([1,2,2,3,3])       == [1,2,3]
+
+const uniqueInOrder = (iterable) => {
+	if (Array.isArray(iterable)) return [...new Set(iterable)];
+
+	const something = iterable.split('').reduce((acc, letter, index, arr) => {
+		return letter !== arr[index + 1] ? [...acc, letter] : acc;
+	}, []);
+
+	return something;
+};
+
+console.log(uniqueInOrder('AAAABBBCCDAABBB'));
+console.log(uniqueInOrder([1, 2, 2, 3, 3]));
