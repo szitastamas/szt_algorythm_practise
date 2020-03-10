@@ -567,3 +567,150 @@ function orderWeight(strng) {
 }
 
 console.log(orderWeight('56 65 74 100 99 68 86 180 90'));
+
+
+
+// Complete the solution so that it strips all text that follows any of a set of comment markers passed in. 
+// Any whitespace at the end of the line should also be stripped out.
+// Example:
+
+// Given an input string of:
+// apples, pears # and bananas
+// grapes
+// bananas !apples
+
+// The output expected would be:
+// apples, pears
+// grapes
+// bananas
+// The code would be called like so:
+
+// var result = solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
+// result should == "apples, pears\ngrapes\nbananas"
+
+function solution(input, markers) {
+  
+	const lines = input.split("\n");
+
+	const clearedUpInput = lines.reduce((acc, line) => {
+		const markerInLine = markers.filter(marker => line.includes(marker));
+		if(markerInLine.length > 0){
+			return [...acc, line.slice(0, line.indexOf(markerInLine)).trim()]
+		}else{
+			return [...acc, line]
+		}
+	}, []);
+
+	return clearedUpInput.join("\n")
+
+};
+
+console.log(solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"]));
+
+
+// You have to create a function that takes a positive integer number 
+// and returns the next bigger number formed by the same digits:
+
+// 12 ==> 21
+// 513 ==> 531
+// 2017 ==> 2071
+// If no bigger number can be composed using those digits, return -1:
+
+// 9 ==> -1
+// 111 ==> -1
+// 531 ==> -1
+
+// function nextBigger(n){
+	
+// 	if(n < 10) return -1;
+
+// 	if(new Set([...n.toString()]).size === 1) return -1
+
+// 	if(parseInt([...n.toString()].sort((a,b) => +b-(+a)).join(""),10) === n) return - 1
+
+// 	const startNumUnits = [...n.toString()].sort();
+// 	let incrementNumber = n;
+// 	let isFound = false;
+// 	while(isFound === false){
+// 		let areMatching = true;
+// 		++incrementNumber;
+
+// 		const incrementUnits = [...incrementNumber.toString()].sort();
+
+// 		for(let i = 0; i < incrementUnits.length; i++){
+// 			if(startNumUnits[i] !== incrementUnits[i]){
+// 				areMatching = false;
+// 				break;
+// 			}
+// 		}
+
+// 		if(areMatching) isFound = true;
+
+// 	}
+
+// 	return incrementNumber;
+// }
+
+// console.log(nextBigger(513));
+
+
+// Write a function that, given a string of text (possibly with punctuation and line-breaks),
+// returns an array of the top-3 most occurring words, in descending order of the number of occurrences.
+
+// Assumptions:
+// A word is a string of letters (A to Z) optionally containing one or more apostrophes (') in ASCII. 
+// (No need to handle fancy punctuation.)
+
+// Matches should be case-insensitive, and the words in the result should be lowercased.
+// Ties may be broken arbitrarily.
+// If a text contains fewer than three unique words, then either the top-2 or top-1 words should be returned, 
+// or an empty array if a text contains no words.
+
+// Examples:
+// top_3_words("In a village of La Mancha, the name of which I have no desire to call to
+// mind, there lived not long since one of those gentlemen that keep a lance
+// in the lance-rack, an old buckler, a lean hack, and a greyhound for
+// coursing. An olla of rather more beef than mutton, a salad on most
+// nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra
+// on Sundays, made away with three-quarters of his income.")
+// # => ["a", "of", "on"]
+
+// top_3_words("e e e e DDD ddd DdD: ddd ddd aa aA Aa, bb cc cC e e e")
+// # => ["e", "ddd", "aa"]
+
+// top_3_words("  //wont won't won't")
+// # => ["won't", "wont"]
+
+function topThreeWords(text) {
+
+	if(text.length === 0) return [];
+
+	const dictionary = {};
+
+	text.toLowerCase().replace("\n", " ").split(" ").forEach(word => {
+		if(!dictionary[word]){
+			dictionary[word] = 1;
+		}else{
+			dictionary[word]++;
+		}
+	});
+
+	const counterArray = Object.values(dictionary).sort((a,b) => b-a);
+
+	const threeBiggest = counterArray.length > 3 ? counterArray.slice(0,3) : counterArray;
+
+	const threeMostOftenElements = threeBiggest.map(num => {
+		return Object.keys(dictionary).filter(item => dictionary[item] === num);
+	}).flat()
+
+	// const threeMostOftenElements = Object.keys(dictionary).reduce((acc,elem) => {
+
+	// 	return threeBiggest.filter(num => num == (dictionary[elem])).length === 1 ? [...acc, elem] : acc;
+
+	// },[])
+
+	return threeMostOftenElements;
+
+}
+console.log(topThreeWords(" , e  .. "))
+// console.log(topThreeWords("In a village of La Mancha, the name of which I have no desire to call to\nmind, there lived not long since one of those gentlemen that keep a lance\nin the lance-rack, an old buckler, a lean hack, and a greyhound for\ncoursing. An olla of rather more beef than mutton, a salad on most\nnights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra\non Sundays, made away with three-quarters of his income."));
