@@ -713,4 +713,23 @@ function topThreeWords(text) {
 
 }
 console.log(topThreeWords(" , e  .. "))
-// console.log(topThreeWords("In a village of La Mancha, the name of which I have no desire to call to\nmind, there lived not long since one of those gentlemen that keep a lance\nin the lance-rack, an old buckler, a lean hack, and a greyhound for\ncoursing. An olla of rather more beef than mutton, a salad on most\nnights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra\non Sundays, made away with three-quarters of his income."));
+// console.log(topThreeWords("In a village of La Mancha, the name of which I have no desire to call to\nmind, there lived not long since one of those gentlemen that keep a lance\nin the lance-rack, an old buckler, a lean hack, and a greyhound for\ncoursing. An olla of rather more beef than mutton, a salad on most\nnights, scraps on Saturdays, lentils on Fridays, 
+//and a pigeon or so extra\non Sundays, made away with three-quarters of his income."));
+
+
+// Replace words in a sentence with their synonyms.
+const wordsAndSyn = {
+	child: "kid",
+	likes: "loves",
+	code: "programm",
+	nice: "lovely",
+	Tom: "Tomcsak"
+}
+
+const sentence = "Tom is a nice child who likes to code"
+
+const replaceWithSynonyms = (str) => {
+	return str.split(" ").map(word => wordsAndSyn[word] ? wordsAndSyn[word] : word).join(" ")
+}
+
+console.log(replaceWithSynonyms(sentence))
