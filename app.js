@@ -716,7 +716,33 @@ console.log(topThreeWords(" , e  .. "))
 // console.log(topThreeWords("In a village of La Mancha, the name of which I have no desire to call to\nmind, there lived not long since one of those gentlemen that keep a lance\nin the lance-rack, an old buckler, a lean hack, and a greyhound for\ncoursing. An olla of rather more beef than mutton, a salad on most\nnights, scraps on Saturdays, lentils on Fridays, 
 //and a pigeon or so extra\non Sundays, made away with three-quarters of his income."));
 
+	// #Javascript Challenge
+	// Create the function topSalary(salaries) that returns the name of the top-paid person.
+	// If salaries is empty, it should return null.
+	// If there are multiple top-paid persons, return any of them.
 
+
+	let salaries = {
+		"John": 100,
+		"Pete": 300,
+		"Mary": 250
+	};
+	
+	const biggestSalary = Math.max(...Object.values(salaries))
+	const salariesArray = [...Object.entries(salaries)];
+	let nameOfRichestPerson;
+	
+	for(let [name, salary] of salariesArray){
+		if(salary === biggestSalary){
+			nameOfRichestPerson = name;
+			break;
+		}
+	}
+	
+	console.log(nameOfRichestPerson);
+
+
+	
 // Replace words in a sentence with their synonyms.
 const wordsAndSyn = {
 	child: "kid",
